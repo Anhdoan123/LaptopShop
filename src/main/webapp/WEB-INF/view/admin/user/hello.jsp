@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    hello create user page
+    ok
 </body>
 
 </html>
