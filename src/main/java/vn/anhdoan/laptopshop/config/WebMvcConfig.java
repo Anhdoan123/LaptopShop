@@ -1,4 +1,4 @@
-package vn.hoidanit.laptopshop.config;
+package vn.anhdoan.laptopshop.config;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -32,5 +32,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**").addResourceLocations("/resources/css/");
+        registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/");
+        registry.addResourceHandler("/assets/**").addResourceLocations("/resources/assets/");
     }
 }
