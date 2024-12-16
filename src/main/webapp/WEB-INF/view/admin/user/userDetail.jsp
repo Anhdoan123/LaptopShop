@@ -10,7 +10,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="description" content="" />
                 <meta name="author" content="" />
-                <title>Dashboard - AD Admin</title>
+                <title>LaptopShop - AD Admin</title>
                 <link href="${pageContext.request.contextPath}/css/styles.css" rel="stylesheet" />
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
             </head>
@@ -31,7 +31,8 @@
                                 <h1 class="mt-4">Manager Users</h1>
                                 <ol class="breadcrumb mb-4">
                                     <li class="breadcrumb-item active"><a href="/admin">Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Products</li>
+                                    <li class="breadcrumb-item active"><a href="/admin/user">User</a></li>
+                                    <li class="breadcrumb-item active">View</li>
                                 </ol>
                                 <div class="container mt-5">
                                     <div class="d-flex justify-content-center">
@@ -49,6 +50,7 @@
                                                 <li class="list-group-item">Address: ${userDetail.address}</li>
                                                 <li class="list-group-item">Full Name: ${userDetail.fullName}</li>
                                                 <li class="list-group-item">Phone: ${userDetail.phone}</li>
+                                                <li class="list-group-item">Role: ${userDetail.role.name}</li>
                                             </ul>
                                         </div>
 

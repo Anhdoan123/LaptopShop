@@ -1,12 +1,15 @@
 package vn.anhdoan.laptopshop.controller.admin;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.boot.jaxb.spi.XmlSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,16 +17,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import vn.anhdoan.laptopshop.domain.Role;
 import vn.anhdoan.laptopshop.domain.User;
 import vn.anhdoan.laptopshop.service.UserService;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import vn.anhdoan.laptopshop.service.RoleService;
+import vn.anhdoan.laptopshop.service.UploadService;
 
 @Controller
 public class UserController {
+    private final RoleService roleService;
     private final UserService userService;
+    private final UploadService uploadService;
+    private PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UploadService uploadService, RoleService roleService,
+            PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.uploadService = uploadService;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @RequestMapping("/")
@@ -45,7 +60,18 @@ public class UserController {
     }
 
     @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
-    public String createUserPage(@ModelAttribute("newUser") User user) {
+    public String createUserPage(@ModelAttribute("newUser") User user, @RequestParam("imgFile") MultipartFile file) {
+        Role role = this.roleService.findRoleById(user.getRole().getId());
+        user.setRole(role);
+        String hashPassWord = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassWord);
+        String avatar = "";
+        if (!file.isEmpty()) {
+            avatar = "";
+        } else {
+            avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
+        }
+        user.setAvatar(avatar);
         this.userService.handleSaveUser(user);
         return "redirect:/admin/user";
     }
@@ -59,7 +85,7 @@ public class UserController {
 
     @RequestMapping(value = "/admin/user/update/{id}", method = RequestMethod.GET)
     public String getUpdateUserPage(Model model, @PathVariable long id) {
-        Optional<User> user = userService.getUserById(id);
+        Optional<User> user = this.userService.getUserById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
         } else {
@@ -69,14 +95,23 @@ public class UserController {
     }
 
     @RequestMapping(value = "/admin/user/update", method = RequestMethod.POST)
-    public String UpdateUser(@ModelAttribute("user") User user) {
+    public String UpdateUser(@ModelAttribute("user") User user, @RequestParam("imgFile") MultipartFile file) {
         User currentUser = this.userService.getUserById(user.getId()).get();
+        Role role = this.roleService.findRoleById(user.getRole().getId());
+        String avatar = "";
+        if (file.isEmpty()) {
+            avatar = currentUser.getAvatar();
+        } else {
+            avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
+        }
 
         if (currentUser != null) {
             currentUser.setEmail(user.getEmail());
             currentUser.setPhone(user.getPhone());
             currentUser.setFullName(user.getFullName());
             currentUser.setAddress(user.getAddress());
+            currentUser.setRole(role);
+            currentUser.setAvatar(avatar);
         }
         this.userService.handleSaveUser(currentUser);
         return "redirect:/admin/user";

@@ -9,7 +9,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
             <meta name="description" content="" />
             <meta name="author" content="" />
-            <title>Dashboard - AD Admin</title>
+            <title>LaptopShop - AD Admin</title>
             <link href="${pageContext.request.contextPath}/css/styles.css" rel="stylesheet" />
             <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         </head>
@@ -30,7 +30,7 @@
                             <h1 class="mt-4">Manager Users</h1>
                             <ol class="breadcrumb mb-4">
                                 <li class="breadcrumb-item active"><a href="/admin">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Products</li>
+                                <li class="breadcrumb-item active">Users</li>
                             </ol>
                             <div class="mt-5">
                                 <div class="d-flex d-flex justify-content-between">
@@ -45,6 +45,7 @@
                                             <th>ID</th>
                                             <th>Email</th>
                                             <th>Full Name</th>
+                                            <th>Role</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -54,6 +55,7 @@
                                                 <th>${user.id}</th>
                                                 <td>${user.email}</td>
                                                 <td>${user.fullName}</td>
+                                                <td>${user.role.name}</td>
                                                 <td>
                                                     <a href="/admin/user/${user.id}" class="btn btn-success">View</a>
                                                     <a href="/admin/user/update/${user.id}"

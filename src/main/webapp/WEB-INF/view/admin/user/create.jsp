@@ -10,7 +10,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="description" content="" />
                 <meta name="author" content="" />
-                <title>Dashboard - AD Admin</title>
+                <title>LaptopShop - AD Admin</title>
                 <link href="${pageContext.request.contextPath}/css/styles.css" rel="stylesheet" />
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
@@ -44,7 +44,8 @@
                                 <h1 class="mt-4">Manager Users</h1>
                                 <ol class="breadcrumb mb-4">
                                     <li class="breadcrumb-item active"><a href="/admin">Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Products</li>
+                                    <li class="breadcrumb-item active"><a href="/admin/user">User</a></li>
+                                    <li class="breadcrumb-item active">Create</li>
                                 </ol>
                                 <div class="container mt-3 mb-3">
                                     <div class="row">
@@ -79,7 +80,7 @@
                                                 <button type="submit" class="btn btn-primary">Submit</button>
                                             </form:form> -->
                                             <form:form method="POST" action="/admin/user/create"
-                                                modelAttribute="newUser" class="row g-3">
+                                                modelAttribute="newUser" class="row g-3" enctype="multipart/form-data">
                                                 <div class="col-md-6">
                                                     <label for="inputEmail4" class="form-label">Email</label>
                                                     <form:input type="email" class="form-control" path="email" />
@@ -103,15 +104,15 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="inputState" class="form-label">Role</label>
-                                                    <select id="inputState" class="form-select">
-                                                        <option value="1">ADMIN</option>
-                                                        <option value="2">USER</option>
-                                                    </select path="role_id">
+                                                    <form:select class="form-select" path="role.id">
+                                                        <form:option value="1">ADMIN</form:option>
+                                                        <form:option value="2">USER</form:option>
+                                                    </form:select>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="avatarFile" class="form-label">Avatar</label>
                                                     <input class="form-control" type="file" id="avatarFile"
-                                                        accept=".png,.jpg,.jpeg">
+                                                        accept=".png, .jpg, .jpeg" name="imgFile" />
                                                 </div>
                                                 <div class="col-12">
                                                     <img style="max-height: 250px;display: none;" alt="avatar preview"

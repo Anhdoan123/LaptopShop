@@ -10,7 +10,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="description" content="" />
                 <meta name="author" content="" />
-                <title>Dashboard - AD Admin</title>
+                <title>LaptopShop - AD Admin</title>
                 <link href="${pageContext.request.contextPath}/css/styles.css" rel="stylesheet" />
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
             </head>
@@ -31,7 +31,8 @@
                                 <h1 class="mt-4">Manager Users</h1>
                                 <ol class="breadcrumb mb-4">
                                     <li class="breadcrumb-item active"><a href="/admin">Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Products</li>
+                                    <li class="breadcrumb-item active"><a href="/admin/user">User</a></li>
+                                    <li class="breadcrumb-item active">Update</li>
                                 </ol>
                                 <div class="container mt-3">
                                     <div class="row">
@@ -41,7 +42,7 @@
                                                 Update user
                                             </h1>
                                             <hr />
-                                            <form:form method="POST" action="/admin/user/update" modelAttribute="user">
+                                            <!-- <form:form method="POST" action="/admin/user/update" modelAttribute="user">
                                                 <div class="mb-3" style="display: none;">
                                                     <label class="form-label">ID:</label>
                                                     <form:input type="text" class="form-control" path="id" />
@@ -66,6 +67,51 @@
                                                 <a href="/admin/user/update">
                                                     <button type="submit" class="btn btn-warning">Update</button>
                                                 </a>
+                                            </form:form> -->
+                                            <!-- new -->
+                                            <form:form method="POST" action="/admin/user/update" modelAttribute="user"
+                                                class="row g-3" enctype="multipart/form-data">
+                                                <div class="mb-3" style="display: none;">
+                                                    <label class="form-label">ID:</label>
+                                                    <form:input type="text" class="form-control" path="id" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Email</label>
+                                                    <form:input type="email" class="form-control" path="email" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Address</label>
+                                                    <form:input type="text" class="form-control" path="address" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Phone number</label>
+                                                    <form:input type="phone" class="form-control" path="phone" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Full name</label>
+                                                    <form:input type="text" class="form-control" path="fullName" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Role</label>
+                                                    <form:select class="form-select" path="role.id">
+                                                        <form:option value="1">ADMIN</form:option>
+                                                        <form:option value="2">USER</form:option>
+                                                    </form:select>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="avatarFile" class="form-label">Avatar</label>
+                                                    <input class="form-control" type="file" id="avatarFile"
+                                                        accept=".png, .jpg, .jpeg" name="imgFile" />
+                                                </div>
+                                                <div class="col-12">
+                                                    <img style="max-height: 250px;display: none;" alt="avatar preview"
+                                                        id="avatarPreview">
+                                                </div>
+                                                <div class="col-12">
+                                                    <a href="/admin/user/update">
+                                                        <button type="submit" class="btn btn-warning">Update</button>
+                                                    </a>
+                                                </div>
                                             </form:form>
                                         </div>
                                     </div>
