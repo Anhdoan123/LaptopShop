@@ -32,7 +32,56 @@
                                 <li class="breadcrumb-item active"><a href="/admin">Dashboard</a></li>
                                 <li class="breadcrumb-item active">Products</li>
                             </ol>
-                            <div>product</div>
+                            <div class="mt-5">
+                                <div class="d-flex d-flex justify-content-between">
+                                    <h3>Table products</h3>
+                                    <a class="btn btn-primary" href="/admin/product/create" role="button">Create a
+                                        product</a>
+                                </div>
+                                <hr>
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Price</th>
+                                            <th>Factory</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${listProduct}" var="product">
+                                            <tr>
+                                                <th>${product.id}</th>
+                                                <td>${product.name}</td>
+                                                <td>${product.price}</td>
+                                                <td>${product.factory}</td>
+                                                <td>
+                                                    <a href="/admin/product/${product.id}"
+                                                        class="btn btn-success">View</a>
+                                                    <a href="/admin/product/update/${product.id}"
+                                                        class="btn btn-warning">Update</a>
+                                                    <a href="/admin/product/delete/${product.id}"
+                                                        class="btn btn-danger">Delete</a>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                        <tr>
+                                            <th>1</th>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>
+                                                <a href="/admin/product/${product.id}" class="btn btn-success">View</a>
+                                                <a href="/admin/product/update/${product.id}"
+                                                    class="btn btn-warning">Update</a>
+                                                <a href="/admin/product/delete/${product.id}"
+                                                    class="btn btn-danger">Delete</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </main>
                     <!-- footer -->
