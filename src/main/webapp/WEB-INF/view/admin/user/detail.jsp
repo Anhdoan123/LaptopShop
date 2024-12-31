@@ -51,6 +51,16 @@
                                                 <li class="list-group-item">Full Name: ${userDetail.fullName}</li>
                                                 <li class="list-group-item">Phone: ${userDetail.phone}</li>
                                                 <li class="list-group-item">Role: ${userDetail.role.name}</li>
+                                                <li class="list-group-item">
+                                                    <div class="col-12">
+                                                        Image
+                                                        <img src="/images/avatar/${userDetail.avatar}"
+                                                            style="max-height: 250px;display: none;"
+                                                            alt="avatar preview" id="avatarPreview"
+                                                            onload=" this.style.display='block';"
+                                                            onerror=" this.style.display='none';">
+                                                    </div>
+                                                </li>
                                             </ul>
                                         </div>
 

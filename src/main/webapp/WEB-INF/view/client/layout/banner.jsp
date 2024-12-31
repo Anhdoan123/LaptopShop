@@ -3,8 +3,10 @@
         <div class="container py-5">
             <div class="row g-5 align-items-center">
                 <div class="col-md-12 col-lg-7">
-                    <h4 class="mb-3 text-secondary">100% Sản phẩm chính hãng</h4>
-                    <h1 class="mb-5 display-3 text-primary">Hàng cao cấp<br />
+                    <h4 class="mb-3 text-secondary" style="user-select: none; pointer-events: none;">100% Sản phẩm chính
+                        hãng</h4>
+                    <h1 class="mb-5 display-3 text-primary" style="user-select: none; pointer-events: none;">Hàng cao
+                        cấp<br />
                         Rẻ vô địch</h1>
                     <!-- <div class="position-relative mx-auto">
                         <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="number"

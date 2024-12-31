@@ -10,6 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,9 +24,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import vn.anhdoan.laptopshop.domain.Role;
 import vn.anhdoan.laptopshop.domain.User;
 import vn.anhdoan.laptopshop.service.UserService;
+import vn.anhdoan.laptopshop.service.validator.GroupValidator.OnCreate;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.Valid;
+import jakarta.validation.groups.Default;
 import vn.anhdoan.laptopshop.service.RoleService;
 import vn.anhdoan.laptopshop.service.UploadService;
 
@@ -60,18 +68,26 @@ public class UserController {
     }
 
     @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
-    public String createUserPage(@ModelAttribute("newUser") User user, @RequestParam("imgFile") MultipartFile file) {
-        Role role = this.roleService.findRoleById(user.getRole().getId());
+    public String createUserPage(@ModelAttribute("newUser") @Validated({ Default.class, OnCreate.class }) User user,
+            BindingResult newUserBindingResult,
+            @RequestParam("imgFile") MultipartFile file) {
+        for (FieldError fieldError : newUserBindingResult.getFieldErrors()) {
+            System.out.println("Field: " + fieldError.getField());
+            System.out.println("Message: " + fieldError.getDefaultMessage());
+        }
+        if (newUserBindingResult.hasErrors()) {
+            return "admin/user/create";
+        }
+
+        Role role = this.roleService.getRoleByName(user.getRole().getName());
         user.setRole(role);
         String hashPassWord = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassWord);
-        String avatar = "";
         if (!file.isEmpty()) {
-            avatar = "";
-        } else {
-            avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
+            String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
+            user.setAvatar(avatar);
         }
-        user.setAvatar(avatar);
+
         this.userService.handleSaveUser(user);
         return "redirect:/admin/user";
     }
@@ -80,7 +96,7 @@ public class UserController {
     public String getUserDetail(@PathVariable long id, Model model) {
         Optional<User> user = this.userService.getUserById(id);
         model.addAttribute("userDetail", user.get());
-        return "/admin/user/userDetail";
+        return "admin/user/detail";
     }
 
     @RequestMapping(value = "/admin/user/update/{id}", method = RequestMethod.GET)
@@ -91,13 +107,23 @@ public class UserController {
         } else {
             model.addAttribute("error", "User not found!");
         }
-        return "/admin/user/update";
+        return "admin/user/update";
     }
 
     @RequestMapping(value = "/admin/user/update", method = RequestMethod.POST)
-    public String UpdateUser(@ModelAttribute("user") User user, @RequestParam("imgFile") MultipartFile file) {
+    public String UpdateUser(@ModelAttribute("user") @Validated User user,
+            BindingResult userBindingResult,
+            @RequestParam("imgFile") MultipartFile file) {
+        for (FieldError fieldError : userBindingResult.getFieldErrors()) {
+            System.out.println("Field: " + fieldError.getField());
+            System.out.println("Message: " + fieldError.getDefaultMessage());
+        }
+        if (userBindingResult.hasErrors()) {
+            return "admin/user/update";
+        }
+
         User currentUser = this.userService.getUserById(user.getId()).get();
-        Role role = this.roleService.findRoleById(user.getRole().getId());
+        Role role = this.roleService.getRoleByName(user.getRole().getName());
         String avatar = "";
         if (file.isEmpty()) {
             avatar = currentUser.getAvatar();
@@ -106,7 +132,6 @@ public class UserController {
         }
 
         if (currentUser != null) {
-            currentUser.setEmail(user.getEmail());
             currentUser.setPhone(user.getPhone());
             currentUser.setFullName(user.getFullName());
             currentUser.setAddress(user.getAddress());
@@ -122,7 +147,7 @@ public class UserController {
         User user = new User();
         user.setId(id);
         model.addAttribute("user", user);
-        return "/admin/user/delete";
+        return "admin/user/delete";
     }
 
     @PostMapping(value = "/admin/user/delete")

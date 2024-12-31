@@ -12,7 +12,19 @@
                 <meta name="author" content="" />
                 <title>LaptopShop - AD Admin</title>
                 <link href="${pageContext.request.contextPath}/css/styles.css" rel="stylesheet" />
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                <script>
+                    $(document).ready(() => {
+                        const avatarFile = $("#avatarFile");
+                        avatarFile.change(function (e) {
+                            const imgURL = URL.createObjectURL(e.target.files[0]);
+                            $("#avatarPreview").attr("src", imgURL);
+                            $("#avatarPreview").css({ display: "block" });
+                        });
+                    });
+                </script>
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
             </head>
 
             <body class="sb-nav-fixed">
@@ -76,8 +88,11 @@
                                                     <form:input type="text" class="form-control" path="id" />
                                                 </div>
                                                 <div class="col-md-6">
+
                                                     <label class="form-label">Email</label>
-                                                    <form:input type="email" class="form-control" path="email" />
+                                                    <form:input type="email" class="form-control" path="email"
+                                                        disabled="true" />
+
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="form-label">Address</label>
@@ -88,14 +103,20 @@
                                                     <form:input type="phone" class="form-control" path="phone" />
                                                 </div>
                                                 <div class="col-md-6">
+                                                    <c:set var="errorFullname">
+                                                        <form:errors path="fullName" cssClass="invalid-feedback" />
+                                                    </c:set>
                                                     <label class="form-label">Full name</label>
-                                                    <form:input type="text" class="form-control" path="fullName" />
+                                                    <form:input type="text"
+                                                        class="form-control ${not empty errorFullname? 'is-invalid':''}"
+                                                        path="fullName" />
+                                                    ${errorFullname}
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="form-label">Role</label>
-                                                    <form:select class="form-select" path="role.id">
-                                                        <form:option value="1">ADMIN</form:option>
-                                                        <form:option value="2">USER</form:option>
+                                                    <form:select class="form-select" path="role.name">
+                                                        <form:option value="ADMIN">ADMIN</form:option>
+                                                        <form:option value="USER">USER</form:option>
                                                     </form:select>
                                                 </div>
                                                 <div class="col-12 col-md-6">
@@ -104,8 +125,10 @@
                                                         accept=".png, .jpg, .jpeg" name="imgFile" />
                                                 </div>
                                                 <div class="col-12">
-                                                    <img style="max-height: 250px;display: none;" alt="avatar preview"
-                                                        id="avatarPreview">
+                                                    <img src="/images/avatar/${user.avatar}"
+                                                        style="max-height: 250px;display: none;" alt="avatar preview"
+                                                        id="avatarPreview" onload=" this.style.display='block';"
+                                                        onerror=" this.style.display='none';">
                                                 </div>
                                                 <div class="col-12">
                                                     <a href="/admin/user/update">
@@ -115,7 +138,7 @@
                                             </form:form>
                                         </div>
                                     </div>
-                                </div>s
+                                </div>
                             </div>
                         </main>
                         <!-- footer -->

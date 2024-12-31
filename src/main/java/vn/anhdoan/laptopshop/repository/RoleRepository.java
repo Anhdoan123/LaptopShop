@@ -7,5 +7,7 @@ import vn.anhdoan.laptopshop.domain.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    public Role findById(long id);
+    Role findById(long id);
+
+    Role findByName(String name);
 }

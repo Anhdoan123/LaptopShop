@@ -2,12 +2,16 @@ package vn.anhdoan.laptopshop.domain;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
@@ -18,14 +22,36 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
+
+    @NotNull
+    @NotEmpty(message = "Product name cannot be empty")
     String name;
+
+    @Min(value = 1, message = "Must be greater than 0")
     double price;
     String image;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    @NotEmpty(message = "Detail desc cannot be empty")
     String detailDesc;
+
+    @NotEmpty(message = "Short desc cannot be empty")
     String shortDesc;
+
+    @Min(value = 1, message = "Must be greater than 0")
     long quantity;
     long sold;
     String factory;
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    String target;
 
     public long getId() {
         return id;
@@ -109,8 +135,19 @@ public class Product {
     @OneToMany(mappedBy = "product")
     List<OrderDetail> orderDetails;
 
+    @OneToMany(mappedBy = "product")
+    List<CartDetail> cartDetails;
+
     public List<OrderDetail> getOrderDetails() {
         return orderDetails;
+    }
+
+    public List<CartDetail> getCartDetails() {
+        return cartDetails;
+    }
+
+    public void setCartDetails(List<CartDetail> cartDetails) {
+        this.cartDetails = cartDetails;
     }
 
     public void setOrderDetails(List<OrderDetail> orderDetails) {
