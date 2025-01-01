@@ -20,22 +20,22 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    double sum;
+    long sum;
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public double getSum() {
+    public long getSum() {
         return sum;
     }
 
-    public void setSum(double sum) {
+    public void setSum(long sum) {
         this.sum = sum;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @OneToMany(mappedBy = "cart")

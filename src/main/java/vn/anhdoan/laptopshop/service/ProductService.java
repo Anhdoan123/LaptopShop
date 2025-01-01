@@ -1,9 +1,11 @@
 package vn.anhdoan.laptopshop.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpSession;
 import vn.anhdoan.laptopshop.domain.Cart;
 import vn.anhdoan.laptopshop.domain.CartDetail;
 import vn.anhdoan.laptopshop.domain.Product;
@@ -44,32 +46,66 @@ public class ProductService {
         this.productRepository.deleteById(id);
     }
 
-    public void handleAddProductToCart(String email, long productId) {
+    public void handleAddProductToCart(String email, long productId, HttpSession session) {
         User user = this.userRepository.findByEmail(email);
         Product product = this.productRepository.findById(productId);
+        Cart cart = this.cartRepository.findByUser(user);
         CartDetail cartDetail = new CartDetail();
         if (user != null) {
-            Cart cart = this.cartRepository.findByUser(user);
-
+            // Kiem tra neu cart ch ton tai thi tao moi
             if (cart == null) {
                 Cart newCart = new Cart();
-                newCart.setSum(1);
+                newCart.setSum(0);
                 newCart.setUser(user);
                 cart = this.cartRepository.save(newCart);
 
             }
-            cartDetail.setCart(cart);
+            // Check san pham da co trong gio hang chua
             CartDetail cartDetailFound = this.cartDetailRepository.findByCartAndProduct(cart, product);
+            // Co roi thi tang quantity len
             if (cartDetailFound != null) {
                 cartDetailFound.setQuantity(cartDetailFound.getQuantity() + 1);
                 this.cartDetailRepository.save(cartDetailFound);
+                // Chua co thi tao cart detail moi va set lai sum
             } else {
+                cartDetail.setCart(cart);
                 cartDetail.setPrice(product.getPrice());
                 cartDetail.setProduct(product);
                 cartDetail.setQuantity(1);
                 this.cartDetailRepository.save(cartDetail);
+                cart.setSum(cart.getSum() + 1);
+                this.cartRepository.save(cart);
+                session.setAttribute("sum", cart.getSum());
             }
 
+        }
+    }
+
+    public void handleRemoveCartDetail(long id, HttpSession session) {
+        Optional<CartDetail> cartDetail = this.cartDetailRepository.findById(id);
+        if (cartDetail.isPresent()) {
+            this.cartDetailRepository.deleteById(id);
+            Cart cart = cartDetail.get().getCart();
+            if (cart != null) {
+                if (cart.getSum() > 1) {
+                    cart.setSum(cart.getSum() - 1);
+                    session.setAttribute("sum", cart.getSum());
+                } else {
+                    this.cartRepository.deleteById(cart.getId());
+                    session.setAttribute("sum", 0);
+                }
+            }
+        }
+    }
+
+    public void handleUpdateCartBeforeCheckout(List<CartDetail> cartDetails) {
+        for (CartDetail cartDetail : cartDetails) {
+            Optional<CartDetail> cdOptional = this.cartDetailRepository.findById(cartDetail.getId());
+            if (cdOptional.isPresent()) {
+                CartDetail currentCartDetail = cdOptional.get();
+                currentCartDetail.setQuantity(cartDetail.getQuantity());
+                this.cartDetailRepository.save(currentCartDetail);
+            }
         }
     }
 }

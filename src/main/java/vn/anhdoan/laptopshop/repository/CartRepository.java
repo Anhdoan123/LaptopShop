@@ -7,4 +7,6 @@ import vn.anhdoan.laptopshop.domain.User;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
     Cart findByUser(User user);
+
+    // Cart findByCartDetails(CartDetail cartDetail);
 }

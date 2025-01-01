@@ -1,9 +1,11 @@
 package vn.anhdoan.laptopshop.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import vn.anhdoan.laptopshop.domain.Cart;
 import vn.anhdoan.laptopshop.domain.CartDetail;
@@ -35,22 +37,34 @@ public class CartDetailsService {
         if (user != null) {
             Cart cart = this.cartRepository.findByUser(user);
             if (cart != null) {
-                cartDetails = this.cartDetailRepository.findByCart(cart);
+                cartDetails = cart.getCartDetails();
             }
         }
         return cartDetails;
     }
 
-    @Transactional
-    public void handleDeleteCartDetail(String email, long productId) {
-        User user = this.userRepository.findByEmail(email);
-        Product product = this.productRepository.findById(productId);
-        if (user != null) {
-            Cart cart = this.cartRepository.findByUser(user);
-            if (cart != null) {
-                this.cartDetailRepository.deleteByCartAndProduct(cart, product);
-            }
-        }
+    public void handleDeleteCartDetailById(long id) {
+        this.cartDetailRepository.deleteById(id);
     }
+
+    public Optional<CartDetail> getCartDetailById(long id) {
+        return this.cartDetailRepository.findById(id);
+    }
+
+    // @Transactional
+    // public void handleDeleteCartDetail(String email, long productId, HttpSession
+    // session) {
+    // User user = this.userRepository.findByEmail(email);
+    // Product product = this.productRepository.findById(productId);
+    // if (user != null) {
+    // Cart cart = this.cartRepository.findByUser(user);
+    // if (cart != null) {
+    // this.cartDetailRepository.deleteByCartAndProduct(cart, product);
+    // cart.setSum(cart.getSum() - 1);
+    // this.cartRepository.save(cart);
+    // session.setAttribute("sum", cart.getSum());
+    // }
+    // }
+    // }
 
 }
