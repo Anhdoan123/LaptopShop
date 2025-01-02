@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import vn.anhdoan.laptopshop.domain.Cart;
 import vn.anhdoan.laptopshop.domain.CartDetail;
+import vn.anhdoan.laptopshop.domain.Order;
 import vn.anhdoan.laptopshop.domain.Product;
 import vn.anhdoan.laptopshop.domain.User;
 import vn.anhdoan.laptopshop.service.CartDetailsService;
@@ -62,7 +63,7 @@ public class ItemController {
     @PostMapping("/add-product-to-cart/{id}")
     public String handleAddProductToCart(@PathVariable("id") long id, HttpSession session) {
         String email = (String) session.getAttribute("email");
-        this.productService.handleAddProductToCart(email, id, session);
+        this.productService.handleAddProductToCart(email, id, session, 1);
         return "redirect:/";
     }
 
@@ -90,15 +91,39 @@ public class ItemController {
         return "redirect:/checkout";
     }
 
+    @PostMapping("/add-product-from-view-detail")
+    public String handleAddProductFromViewDetail(@RequestParam("id") long id, @RequestParam("quantity") long quantity,
+            HttpSession session) {
+        String email = (String) session.getAttribute("email");
+        this.productService.handleAddProductToCart(email, id, session, quantity);
+        return "redirect:/product/" + id;
+    }
+
     @PostMapping("/place-order")
     public String placeOrderUser(HttpSession session,
             @RequestParam("receiverName") String receiverName,
             @RequestParam("receiverAddress") String receiverAddress,
             @RequestParam("receiverPhone") String receiverPhone) {
         String email = (String) session.getAttribute("email");
-        // this.productService.handleSaveOrder(email, receiverName, receiverAddress,
-        // receiverPhone, session);
+        this.productService.handlePlaceOder(email, session, receiverName, receiverAddress,
+                receiverPhone);
         return "redirect:/thanks";
+    }
+
+    @GetMapping("/thanks")
+    public String getThankPage() {
+        return "client/cart/thanks";
+    }
+
+    @GetMapping("/order-history")
+    public String getOrderHistoryPage(Model model, HttpSession session) {
+        String email = (String) session.getAttribute("email");
+        User user = this.userService.getUserByEmail(email);
+        if (user != null) {
+            List<Order> orders = user.getOrders();
+            model.addAttribute("listOrder", orders);
+        }
+        return "client/order/orderHistory";
     }
 
 }

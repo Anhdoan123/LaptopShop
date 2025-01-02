@@ -8,7 +8,7 @@
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Document - checkou</title>
+                    <title>Document</title>
                     <!-- Google Web Fonts -->
                     <link rel="preconnect" href="https://fonts.googleapis.com">
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,130 +66,91 @@
                                             <th scope="col">Giá</th>
                                             <th scope="col">Số lượng</th>
                                             <th scope="col">Thành tiền</th>
-                                            <th scope="col">Xử lý</th>
+                                            <th scope="col">Trạng thái</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach items="${listCartDetail}" var="cartDetail" varStatus="status">
+                                        <c:forEach items="${listOrder}" var="order">
                                             <tr>
-                                                <th scope="row">
-                                                    <div class="d-flex align-items-center">
-                                                        <img src="/images/product/${cartDetail.product.image}"
-                                                            class="img-fluid me-5 rounded-circle"
-                                                            style="width: 80px; height: 80px;" alt="" alt="">
-                                                    </div>
-                                                </th>
+                                                <td scope="row">
+                                                    <p class="mb-0 mt-4">Order id = ${order.id}</p>
+                                                </td>
                                                 <td>
-                                                    <p class="mb-0 mt-4"><a href="/product/${cartDetail.product.id}"
-                                                            target="_blank">${cartDetail.product.name}</a>
+                                                    <p class="mb-0 mt-6">
                                                     </p>
                                                 </td>
                                                 <td>
-                                                    <p class="mb-0 mt-4">
-                                                        <fmt:formatNumber value=" ${cartDetail.product.price}"
-                                                            type="number" pattern="#,### đ" />
-                                                    </p>
+
                                                 </td>
                                                 <td>
                                                     <div class="input-group quantity mt-4" style="width: 100px;">
-                                                        <input type="text"
-                                                            class="form-control form-control-sm text-center border-0"
-                                                            value="${cartDetail.quantity}" disabled="true">
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <c:set var="totalPrice" value="${totalPrice + (cartDetail.product.price *
                                                         cartDetail.quantity)}" />
-                                                    <p class="mb-0 mt-4" data-cart-detail-id="${cartDetail.id}">
-
-                                                        <fmt:formatNumber value="${cartDetail.product.price *
-                                                            cartDetail.quantity}" type="number" pattern="#,### đ" />
+                                                    <p class="mb-0 mt-4">
+                                                        <fmt:formatNumber value="${order.totalPrice}" type="number"
+                                                            pattern="#,### đ" />
                                                     </p>
                                                 </td>
                                                 <td>
-                                                    <form action="/delete-cart-detail/${cartDetail.id}" method="post">
-                                                        <input type="hidden" name="${_csrf.parameterName}"
-                                                            value="${_csrf.token}" />
-                                                        <button class="btn btn-md rounded-circle bg-light border mt-4">
-                                                            <i class="fa fa-times text-danger"></i>
-                                                        </button>
-                                                    </form>
+                                                    <p class="mb-0 mt-4">${order.status}</p>
                                                 </td>
                                             </tr>
+                                            <c:forEach items="${order.orderDetails}" var="orderDetail">
+                                                <tr>
+                                                    <th scope="row">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="/images/product/${orderDetail.product.image}"
+                                                                class="img-fluid me-5 rounded-circle"
+                                                                style="width: 80px; height: 80px;" alt="" alt="">
+                                                        </div>
+                                                    </th>
+                                                    <td>
+                                                        <p class="mb-0 mt-4"><a
+                                                                href="/product/${orderDetail.product.id}"
+                                                                target="_blank">${orderDetail.product.name}</a>
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">
+                                                            <fmt:formatNumber value=" ${orderDetail.product.price}"
+                                                                type="number" pattern="#,### đ" />
+                                                        </p>
+                                                    </td>
+                                                    <td>
+
+                                                        <p class="mb-0 mt-4" style="margin-left: 25px;">
+                                                            ${orderDetail.quantity}
+                                                        </p>
+
+
+
+                                                    </td>
+                                                    <td>
+                                                        <c:set var="totalPrice" value="${totalPrice + (orderDetail.product.price *
+                                                            orderDetail.quantity)}" />
+                                                        <p class="mb-0 mt-4" data-cart-detail-id="${orderDetail.id}">
+
+                                                            <fmt:formatNumber value="${orderDetail.product.price *
+                                                                orderDetail.quantity}" type="number"
+                                                                pattern="#,### đ" />
+                                                        </p>
+                                                    </td>
+                                                    <td>
+
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
                                         </c:forEach>
                                     </tbody>
                                 </table>
                             </div>
-                            <c:if test="${not empty listCartDetail}">
-                                <form:form action="/place-order" method="post" modelAttribute="cart">
-                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                                    <div class="mt-5 row g-4 justify-content-start">
-                                        <div class="col-12 col-md-6">
-                                            <div class="p-4 ">
-                                                <h5>Thông Tin Người Nhận
-                                                </h5>
-                                                <div class="row">
-                                                    <div class="col-12 form-group mb-3">
-                                                        <label>Tên người nhận</label>
-                                                        <input class="form-control" name="receiverName" required />
-                                                    </div>
-                                                    <div class="col-12 form-group mb-3">
-                                                        <label>Địa chỉ người nhận</label>
-                                                        <input class="form-control" name="receiverAddress" required />
-                                                    </div>
-                                                    <div class="col-12 form-group mb-3">
-                                                        <label>Số điện thoại</label>
-                                                        <input class="form-control" name="receiverPhone" required />
-                                                    </div>
-                                                    <div class="mt-4">
-                                                        <i class="fas fa-arrow-left"></i>
-                                                        <a href="/cart">Quay lại giỏ hàng</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6">
-                                            <div class="bg-light rounded">
-                                                <div class="p-4">
-                                                    <h1 class="display-6 mb-4">Thông Tin <span class="fw-normal">Thanh
-                                                            Toán</span>
-                                                    </h1>
 
-                                                    <div class="d-flex justify-content-between">
-                                                        <h5 class="mb-0 me-4">Phí vận chuyển</h5>
-                                                        <div class="">
-                                                            <p class="mb-0">0 đ</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mt-3 d-flex justify-content-between">
-                                                        <h5 class="mb-0 me-4">Hình thức</h5>
-                                                        <div class="">
-                                                            <p class="mb-0">Thanh toán khi nhận hàng (COD)</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div
-                                                    class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
-                                                    <h5 class="mb-0 ps-4 me-4">Tổng số tiền</h5>
-                                                    <p class="mb-0 pe-4" data-cart-total-price="${totalPrice}">
-                                                        <fmt:formatNumber type="number" value="${totalPrice}" /> đ
-                                                    </p>
-                                                </div>
-
-                                                <button
-                                                    class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">
-                                                    Xác nhận thanh toán
-                                                </button>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form:form>
-
-                            </c:if>
-                            <c:if test="${empty listCartDetail}">
+                            <c:if test="${empty listOrder}">
                                 <div class="alert alert-primary text-center" role="alert">
-                                    Bạn chưa thêm sản phẩm vào giỏ hàng
+                                    Bạn chưa mua sản phẩm nào
                                 </div>
                             </c:if>
                         </div>
